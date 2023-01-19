@@ -6,7 +6,7 @@ export const MovieCard = ({ title, start_date, start_time, runtime, genre, relea
   const [movieOverwiew, setOverwiew] = useState()
   const [cardClicked, setCardClicked] = useState(false)
   const [showMoreInfo, setShowMoreInfo] = useState(false);
-  var releaseDate = new Date(release_date).toLocaleDateString()
+  var releaseDate = new Date(release_date).toTimeString()
 
   function truncateString(text) {
     if (text.length > 19) {

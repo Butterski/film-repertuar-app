@@ -29,7 +29,7 @@ const Admin = () => {
         }
       });
   };
-
+ //  OGAR GODZINY BO ZŁY TIMEZONE I WIADOMOSC PO SUBMIT
   const onAddRepertuarSubmit = (data) => {
     var [movie_id, start_date, start_time] = [
       data.movie_id,
@@ -39,7 +39,6 @@ const Admin = () => {
     if (movie_id.length > 0 && start_date.length > 0 && start_time.length > 0) {
       setAddError("")
       start_date = new Date(`${start_date} ${start_time}`);
-      console.log({ movie_id: movie_id, start_date: start_date })
       fetch("/api/add_repertuar", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -50,7 +49,7 @@ const Admin = () => {
           if (data.error) {
             console.error(error)
           } else {
-            setAfterSubmitMessage(data.toString())
+            setAfterSubmitMessage(`Sucesfully added movie with id ${data.movie_id} at ${data.start_date}`)
           }
         });
     } else {
@@ -138,6 +137,7 @@ const Admin = () => {
               type="submit"
               value="Add Repertuar"
             />
+          {afterSubmitMessage}
           </form>
         </div>
       )}

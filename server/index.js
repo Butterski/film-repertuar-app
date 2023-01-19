@@ -1,27 +1,31 @@
-require('dotenv').config();
+require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const conn = require("./dbConnection");
-const jwt = require('jsonwebtoken');
-
+const jwt = require("jsonwebtoken");
 
 const PORT = process.env.PORT || 3001;
 const app = express();
 app.use(bodyParser.json());
 
+// since its just small project im not gonna do the whole autorisation 
+// thing  but if you need it just decomment this part of code :)
 
-app.use((req, res, next) => {
-  try {
-    const token = req.headers.authorization.split(" ")[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.userData = decoded;
-    next();
-  } catch (error) {
-    return res.status(401).json({
-      message: 'Auth failed'
-    });
-  }
-});
+// app.use((req, res, next) => {
+//   try {
+//     const token = req.headers.authorization.split(" ")[1];
+//     if (!token) {
+//         return next();
+//     }
+//     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+//     req.userData = decoded;
+//     next();
+//   } catch (error) {
+//     return res.status(401).json({
+//       message: 'Auth failed'
+//     });
+//   }
+// });
 
 app.get("/api", (req, res) => {
   res.json({ message: "Hello from server!" });
@@ -40,12 +44,16 @@ app.post("/api/login", (req, res) => {
       if (result.length === 0) {
         res.status(401).json({ error: "Bad login or password" });
       } else {
-        const token = jwt.sign({
-          username: result[0].username,
-          isAdmin: result[0].isAdmin
-        }, process.env.JWT_SECRET, {
-          expiresIn: "1h"
-        });
+        const token = jwt.sign(
+          {
+            username: result[0].username,
+            isAdmin: result[0].isAdmin,
+          },
+          process.env.JWT_SECRET,
+          {
+            expiresIn: "1h",
+          }
+        );
         res.json({ token });
       }
     });
@@ -57,12 +65,13 @@ app.post("/api/login", (req, res) => {
 
 app.post("/api/add_repertuar", (req, res) => {
   try {
+    const { movie_id, start_date } = req.body;
     const sql =
-      "SELECT username, isAdmin FROM users WHERE username = ? and password = ?";
-    conn.query(sql, [login, password], (err, result) => {
+      "INSERT INTO `showtimes` (`id`, `movie_id`, `start_time`) VALUES (NULL, ?, ?)";
+    conn.query(sql, [movie_id, start_date], (err, result) => {
       if (err) throw err;
       if (result.length === 0) {
-        res.status(401).json({ error: "Bad login or password" });
+        res.status(401).json({ error: "Something went wrong" });
       } else {
         res.json(result);
       }
@@ -84,13 +93,10 @@ app.get("/api/get_repertuar", (req, res) => {
 });
 
 app.get("/api/get_movies", (req, res) => {
-  conn.query(
-    `SELECT id, title FROM movies;`,
-    (err, result, fields) => {
-      if (err) throw err;
-      res.json(result);
-    }
-  );
+  conn.query(`SELECT id, title FROM movies;`, (err, result, fields) => {
+    if (err) throw err;
+    res.json(result);
+  });
 });
 
 app.get("/placeholder_img.png", (req, res) => {

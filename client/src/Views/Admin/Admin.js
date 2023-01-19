@@ -7,6 +7,8 @@ const Admin = () => {
   const [authorised, setAuthorised] = useState(false);
   const [movies, setMovies] = useState();
   const [error, setError] = useState("");
+  const [addError, setAddError] = useState("")
+  const [afterSubmitMessage, setAfterSubmitMessage] = useState("")
 
   const { register, handleSubmit } = useForm();
 
@@ -35,14 +37,30 @@ const Admin = () => {
       data.start_time,
     ];
     if (movie_id.length > 0 && start_date.length > 0 && start_time.length > 0) {
-      start_date = new Date(`${start_date} ${start_time}`).toISOString();
-      console.log(start_date);
+      setAddError("")
+      start_date = new Date(`${start_date} ${start_time}`);
+      console.log({ movie_id: movie_id, start_date: start_date })
+      fetch("/api/add_repertuar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ movie_id: movie_id, start_date: start_date }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.error) {
+            console.error(error)
+          } else {
+            setAfterSubmitMessage(data.toString())
+          }
+        });
+    } else {
+      setAddError("Use all fields before submiting")
     }
   };
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (token.length > 0) {
+    if (token && (token.length > 0)) {
       setAuthorised(true);
     }
     if (authorised) {
@@ -114,6 +132,7 @@ const Admin = () => {
               <label>Start Time:</label>
               <input type="time" {...register("start_time")} />
             </div>
+            {addError}
             <input
               className="form-submit"
               type="submit"

@@ -1,18 +1,12 @@
 import React, { useEffect, useState } from "react";
 import "./Home.css";
 import { MovieCard } from "../../components/MovieCard/MovieCard";
+import sortDates from "../../scripts/sortDates";
 
 function Home() {
   const [repertuar, setRepertuar] = useState();
   const [dates, setDates] = useState([]);
 
-  function sortDates(dates) {
-    return dates.sort((a, b) => {
-      const dateA = new Date(a.split(".").reverse().join("-"));
-      const dateB = new Date(b.split(".").reverse().join("-"));
-      return dateA - dateB;
-    });
-  }
 
   useEffect(() => {
     fetch("/api/get_repertuar")

@@ -2,13 +2,17 @@ import React, { useEffect, useState } from "react";
 import "./Admin.css";
 import { useForm } from "react-hook-form";
 import CryptoJS from "crypto-js";
+import sortDates from "../../scripts/sortDates";
+import { AdminMovieCard } from "../../components/AdminMovieCard/AdminMovieCard";
 
 const Admin = () => {
   const [authorised, setAuthorised] = useState(false);
   const [movies, setMovies] = useState();
   const [error, setError] = useState("");
-  const [addError, setAddError] = useState("")
-  const [afterSubmitMessage, setAfterSubmitMessage] = useState("")
+  const [addError, setAddError] = useState("");
+  const [afterSubmitMessage, setAfterSubmitMessage] = useState("");
+  const [repertuar, setRepertuar] = useState();
+  const [dates, setDates] = useState([]);
 
   const { register, handleSubmit } = useForm();
 
@@ -29,7 +33,6 @@ const Admin = () => {
         }
       });
   };
- //  OGAR GODZINY BO ZŁY TIMEZONE I WIADOMOSC PO SUBMIT
   const onAddRepertuarSubmit = (data) => {
     var [movie_id, start_date, start_time] = [
       data.movie_id,
@@ -37,8 +40,10 @@ const Admin = () => {
       data.start_time,
     ];
     if (movie_id.length > 0 && start_date.length > 0 && start_time.length > 0) {
-      setAddError("")
-      start_date = new Date(`${start_date} ${start_time}`);
+      setAddError("");
+      start_date = new Date(
+        new Date(`${start_date} ${start_time}`) / 1 + 3600000
+      ); // idk why but i need to add one hour
       fetch("/api/add_repertuar", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -47,19 +52,21 @@ const Admin = () => {
         .then((res) => res.json())
         .then((data) => {
           if (data.error) {
-            console.error(error)
+            console.error(error);
           } else {
-            setAfterSubmitMessage(`Sucesfully added movie with id ${data.movie_id} at ${data.start_date}`)
+            setAfterSubmitMessage(
+              `Sucesfully added movie with id ${data.movie_id} at ${data.start_date}`
+            );
           }
         });
     } else {
-      setAddError("Use all fields before submiting")
+      setAddError("Use all fields before submiting");
     }
   };
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (token && (token.length > 0)) {
+    if (token && token.length > 0) {
       setAuthorised(true);
     }
     if (authorised) {
@@ -75,6 +82,20 @@ const Admin = () => {
         });
     }
   }, [authorised]);
+
+  useEffect(() => {
+    fetch("/api/get_repertuar")
+      .then((res) => res.json())
+      .then((data) => {
+        setRepertuar(data);
+        let start_time_dates = [];
+        data.forEach((element) => {
+          let stDate = new Date(element.start_date).toLocaleDateString();
+          start_time_dates.push(stDate);
+        });
+        setDates(sortDates([...new Set(start_time_dates)]));
+      });
+  }, []);
 
   return (
     <div className="Admin">
@@ -137,8 +158,36 @@ const Admin = () => {
               type="submit"
               value="Add Repertuar"
             />
-          {afterSubmitMessage}
+            {afterSubmitMessage}
           </form>
+          <div className="admin-panel-movies">
+            {repertuar
+              ? dates.map((date) => {
+                  return (
+                    <div key={date}>
+                      <hr />
+                      {date}
+                      <br />
+                      <div className="movies-container">
+                        {repertuar.map((movie) => {
+                          let filmDate = new Date(
+                            movie.start_date
+                          ).toLocaleDateString();
+                          if (filmDate === date) {
+                            return (
+                              <AdminMovieCard
+                                movie={movie}
+                                key={movie.start_time + movie.title}
+                              />
+                            );
+                          }
+                        })}
+                      </div>
+                    </div>
+                  );
+                })
+              : "loading..."}
+          </div>
         </div>
       )}
     </div>

@@ -1,0 +1,38 @@
+.Popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    transition: all 0.2s;
+    z-index: 99;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .popup-inner {
+    position: relative;
+    width: 90%;
+    max-width: 500px;
+    background: #282c34;
+    padding: 30px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    border-radius: 10px;
+    color: white;
+    border: 3px black solid;
+  }
+  
+  .popup-close-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 10px;
+    background: transparent;
+    border: 0;
+    font-weight: bold;
+    color: #000;
+    font-size: 18px;
+    cursor: pointer;
+  }

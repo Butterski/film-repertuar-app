@@ -2,16 +2,16 @@ const conn = require("../dbConnection");
 
 module.exports = (req, res) => {
   try {
-    const { movie_id, start_date } = req.body;
-    if(movie_id && start_date){
+    const showtime_id = req.body.showtime_id;
+    if(showtime_id){
     const sql =
-      "INSERT INTO `showtimes` (`id`, `movie_id`, `start_time`) VALUES (NULL, ?, ?)";
-    conn.query(sql, [movie_id, start_date], (err, result) => {
+      "DELETE FROM `showtimes` WHERE `showtimes`.`id` = ?;";
+    conn.query(sql, [showtime_id], (err, result) => {
       if (err) throw err;
       if (result.length === 0) {
         res.status(401).json({ error: "Something went wrong" });
       } else {
-        res.json(result);
+        res.json({response: "Removed schedule with id " + showtime_id});
       }
     });
   } else {

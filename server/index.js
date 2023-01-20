@@ -5,6 +5,7 @@ const login = require("./api/login");
 const addRepertuar = require("./api/addRepertuar");
 const getRepertuar = require("./api/getRepertuar");
 const getMovies = require("./api/getMovies");
+const removeRepertuar = require("./api/removeRepertuar")
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -16,6 +17,7 @@ app.get("/api", (req, res) => {
 
 app.post("/api/login", login);
 app.post("/api/add_repertuar", addRepertuar);
+app.post("/api/remove_repertuar", removeRepertuar)
 app.get("/api/get_repertuar", getRepertuar);
 app.get("/api/get_movies", getMovies);
 app.get("/placeholder_img.png", (req, res) => {

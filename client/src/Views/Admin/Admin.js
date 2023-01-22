@@ -180,6 +180,8 @@ const Admin = () => {
                                 key={movie.start_time + movie.title}
                               />
                             );
+                          } else {
+                            return null
                           }
                         })}
                       </div>

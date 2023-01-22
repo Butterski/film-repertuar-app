@@ -7,7 +7,6 @@ function Home() {
   const [repertuar, setRepertuar] = useState();
   const [dates, setDates] = useState([]);
 
-
   useEffect(() => {
     fetch("/api/get_repertuar")
       .then((res) => res.json())
@@ -45,10 +44,12 @@ function Home() {
                             release_date={movie.release_date}
                             genre={movie.genre}
                             runtime={movie.runtime}
-                            start_time={movie.start_time}
+                            start_time={(movie.start_time).slice(0, 5)}
                             start_date={movie.start_date}
                           />
                         );
+                      } else {
+                        return null;
                       }
                     })}
                   </div>

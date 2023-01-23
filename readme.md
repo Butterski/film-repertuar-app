@@ -1,6 +1,8 @@
 # Repertuar App
 
 Demo: [rep.buterplayground.fun/](https://rep.buterplayground.fun/)
+if you want tu acess admin panel just go to [rep.buterplayground.fun/admin](https://rep.buterplayground.fun/admin) login and password is `admin`
+
 
 Simple app i made using React for frontend and node.js for backend server to learn node.js and train React.
 

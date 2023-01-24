@@ -1,6 +1,8 @@
 # Repertuar App
 
-Demo: [rep.buterplayground.fun/](https://rep.buterplayground.fun/)
+Demo: [rep.buterplayground.fun/](https://rep.buterplayground.fun/) (currently admin panel is not working)
+
+
 if you want tu acess admin panel just go to [rep.buterplayground.fun/admin](https://rep.buterplayground.fun/admin) login and password is `admin`
 
 

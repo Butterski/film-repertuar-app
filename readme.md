@@ -1,5 +1,7 @@
 # Repertuar App
 
+## POST REQUESTS ARE NOT WORKING (WORKING ON IT)
+
 Demo: [rep.buterplayground.fun/](https://rep.buterplayground.fun/) (currently admin panel is not working)
 
 
